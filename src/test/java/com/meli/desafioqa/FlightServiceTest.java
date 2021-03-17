@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@SpringBootTest
+@WebMvcTest(FlightService.class)
 public class FlightServiceTest {
 
     @MockBean
@@ -138,13 +139,113 @@ public class FlightServiceTest {
     }
 
     @Test
-    public void testBookFlight() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
+    public void testBookFlightWithCredit() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
                 LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
 
         FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
                 this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("CREDIT", "1234-1234-1234-1234", 5));
+
+        Assertions.assertEquals(this.bookedFlightDTO, this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWithDebit() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+
+        this.bookedFlightDTO.setInterest(0.0);
+        this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
+
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+
+        Assertions.assertEquals(this.bookedFlightDTO, this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWithNotValidPaymentType() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+
+        this.bookedFlightDTO.setInterest(0.0);
+        this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
+
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("NOT VALID", "1234-1234-1234-1234", 1));
+
+        Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWithNegativeDues() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+
+        this.bookedFlightDTO.setInterest(0.0);
+        this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
+
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("CREDIT", "1234-1234-1234-1234", -1));
+
+        Assertions.assertThrows(NotValidDuesNumber.class, () -> this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWithMoreThaOneDue() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+
+        this.bookedFlightDTO.setInterest(0.0);
+        this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
+
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 2));
+
+        Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWherePeopleAndSeatsDontMatch() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+        this.bookedFlightDTO.getFlightReservationDTO().setSeats(2);
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWhereFlightNumberDoesntMatch() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+        this.bookedFlightDTO.getFlightReservationDTO().setFlightNumber("NOT");
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
+    }
+
+    @Test
+    public void testBookFlightWithDebitForTwoPeople() throws PlaceDoesNotExist, NotFoundException, NotValidFilterException, NotValidDuesNumber, InvalidReservationException, InvalidDateFormat {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
+                LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
+
+        this.bookedFlightDTO.setAmount(this.bookedFlightDTO.getAmount() * 2);
+        this.bookedFlightDTO.setInterest(0.0);
+        this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
+        this.bookedFlightDTO.getFlightReservationDTO().getPeople().add(new PersonDTO("40404040","person2@gmail.com", "person", "person", "25-06-1997"));
+        this.bookedFlightDTO.getFlightReservationDTO().setSeats(2);
+
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
 
         Assertions.assertEquals(this.bookedFlightDTO, this.flightService.bookFlight(flightReservationRequest));
     }
