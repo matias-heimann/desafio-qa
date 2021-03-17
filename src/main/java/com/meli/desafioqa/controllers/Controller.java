@@ -3,6 +3,7 @@ package com.meli.desafioqa.controllers;
 import com.meli.desafioqa.exceptions.*;
 import com.meli.desafioqa.model.FlightReservation;
 import com.meli.desafioqa.model.HotelReservationRequest;
+import com.meli.desafioqa.model.dto.FlightDTO;
 import com.meli.desafioqa.model.dto.StatusDTO;
 import com.meli.desafioqa.model.dto.HotelDTO;
 import com.meli.desafioqa.model.dto.HotelReservationDTO;
@@ -29,13 +30,22 @@ public class Controller {
     public List<HotelDTO> getHotels(@RequestParam(required = false, defaultValue = "") String dateFrom,
                                     @RequestParam(required = false, defaultValue = "") String dateTo,
                                     @RequestParam(required = false, defaultValue = "") String destination)
-            throws NotValidHotelFilterException, InvalidDateFormat, DestinationDoesNotExist, NotFoundHotelsException, RoomTypeDoesNotExist {
+            throws NotValidFilterException, InvalidDateFormat, PlaceDoesNotExist, NotFoundException, RoomTypeDoesNotExist {
         return this.hotelService.getHotels(dateFrom, dateTo, destination);
     }
 
     @PostMapping("/booking")
-    public HotelReservationDTO bookHotel(@RequestBody @Valid HotelReservationRequest hotelReservationRequest) throws InvalidDateFormat, InvalidReservationException, DestinationDoesNotExist, RoomTypeDoesNotExist, NotValidHotelFilterException, NotFoundHotelsException, NotValidDuesNumber {
+    public HotelReservationDTO bookHotel(@RequestBody @Valid HotelReservationRequest hotelReservationRequest) throws InvalidDateFormat, InvalidReservationException, PlaceDoesNotExist, RoomTypeDoesNotExist, NotValidFilterException, NotFoundException, NotValidDuesNumber {
         return this.hotelService.bookHotel(hotelReservationRequest);
+    }
+
+    @GetMapping("/flights")
+    public List<FlightDTO> getFlights(@RequestParam(required = false, defaultValue = "") String dateFrom,
+                                      @RequestParam(required = false, defaultValue = "") String dateTo,
+                                      @RequestParam(required = false, defaultValue = "") String origin,
+                                      @RequestParam(required = false, defaultValue = "") String destination)
+            throws PlaceDoesNotExist, NotValidFilterException, NotFoundException, InvalidDateFormat {
+        return this.flightService.getFlights(origin, destination, dateFrom, dateTo);
     }
 
     @PostMapping("/flight-reservation")

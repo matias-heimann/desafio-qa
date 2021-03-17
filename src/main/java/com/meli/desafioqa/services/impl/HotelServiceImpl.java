@@ -5,7 +5,6 @@ import com.meli.desafioqa.model.HotelDao;
 import com.meli.desafioqa.model.HotelReservationRequest;
 import com.meli.desafioqa.model.dto.HotelDTO;
 import com.meli.desafioqa.model.dto.HotelReservationDTO;
-import com.meli.desafioqa.model.dto.PaymentMethodDTO;
 import com.meli.desafioqa.model.dto.StatusDTO;
 import com.meli.desafioqa.repositories.HotelRepository;
 import com.meli.desafioqa.services.HotelService;
@@ -16,14 +15,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -33,9 +27,9 @@ public class HotelServiceImpl implements HotelService {
     private HotelRepository hotelRepository;
 
     @Override
-    public List<HotelDTO> getHotels(String dateFrom, String dateTo, String destination) throws NotValidHotelFilterException, InvalidDateFormat, DestinationDoesNotExist, NotFoundHotelsException, RoomTypeDoesNotExist {
+    public List<HotelDTO> getHotels(String dateFrom, String dateTo, String destination) throws NotValidFilterException, InvalidDateFormat, PlaceDoesNotExist, NotFoundException, RoomTypeDoesNotExist {
         if(dateFrom == null || dateTo == null || destination == null){
-            throw new NotValidHotelFilterException("There can't be any null parameters");
+            throw new NotValidFilterException("There can't be any null parameters");
         }
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -49,7 +43,7 @@ public class HotelServiceImpl implements HotelService {
             return hotelDTOS;
         }
         else if(dateFrom.equals("") || dateTo.equals("") || destination.equals("")){
-            throw new NotValidHotelFilterException("If there is one empty filter all of them must be empty");
+            throw new NotValidFilterException("If there is one empty filter all of them must be empty");
         }
 
         LocalDate localDateFrom = DateValidationUtil.dateValidation(dateFrom, "dd/MM/yyyy");
@@ -69,7 +63,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public HotelReservationDTO bookHotel(HotelReservationRequest hotelReservationRequest) throws InvalidReservationException, InvalidDateFormat, NotFoundHotelsException, NotValidHotelFilterException, DestinationDoesNotExist, RoomTypeDoesNotExist, NotValidDuesNumber {
+    public HotelReservationDTO bookHotel(HotelReservationRequest hotelReservationRequest) throws InvalidReservationException, InvalidDateFormat, NotFoundException, NotValidFilterException, PlaceDoesNotExist, RoomTypeDoesNotExist, NotValidDuesNumber {
         if(hotelReservationRequest == null){
             throw new InvalidReservationException("Hotel reservation can't be null");
         }

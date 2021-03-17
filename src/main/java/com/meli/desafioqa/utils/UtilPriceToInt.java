@@ -42,7 +42,7 @@ public class UtilPriceToInt {
             if(!NumberUtils.isCreatable(splitPrice[i])){
                 throw new InvalidPriceFormat("Invalid number");
             }
-            totalPrice *= 10;
+            totalPrice *= 1000;
             totalPrice += Integer.valueOf(splitPrice[i]);
         }
         return totalPrice;

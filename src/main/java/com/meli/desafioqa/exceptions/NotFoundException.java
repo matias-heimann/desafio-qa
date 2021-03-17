@@ -2,9 +2,9 @@ package com.meli.desafioqa.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class NotFoundHotelsException extends BaseException{
+public class NotFoundException extends BaseException{
 
-    public NotFoundHotelsException(String message) {
+    public NotFoundException(String message) {
         super(HttpStatus.NOT_FOUND, message);
     }
 }

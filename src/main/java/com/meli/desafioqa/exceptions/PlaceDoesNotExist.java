@@ -2,9 +2,9 @@ package com.meli.desafioqa.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class DestinationDoesNotExist extends BaseException{
+public class PlaceDoesNotExist extends BaseException{
 
-    public DestinationDoesNotExist(String message) {
+    public PlaceDoesNotExist(String message) {
         super(HttpStatus.NOT_FOUND, message);
     }
 }
