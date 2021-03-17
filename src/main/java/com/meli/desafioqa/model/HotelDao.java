@@ -8,7 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Getter @Setter @EqualsAndHashCode
+@Getter @Setter @EqualsAndHashCode @ToString
 public class HotelDao {
 
     private String id;

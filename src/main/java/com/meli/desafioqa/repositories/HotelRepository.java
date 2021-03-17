@@ -14,6 +14,5 @@ public interface HotelRepository {
 
     public List<HotelDao> getAll();
     public List<HotelDao> getHotels(@NotNull LocalDate dateFrom, @NotNull LocalDate dateTo, @NotNull String city) throws NotValidFilterException, PlaceDoesNotExist, NotFoundException;
-    public Optional<HotelDao> getById(@NotNull String id);
 
 }

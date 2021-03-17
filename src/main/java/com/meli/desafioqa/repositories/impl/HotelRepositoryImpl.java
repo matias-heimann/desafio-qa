@@ -16,10 +16,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -28,28 +25,36 @@ public class HotelRepositoryImpl implements HotelRepository {
     @Value("${hotels-json}")
     private String filename;
 
-    private HashMap<String, HotelDao> hotels;
+    private List<HotelDao> hotels;
 
     public HotelRepositoryImpl(){
-        this.hotels = new HashMap<>();
+    }
+
+    public HotelRepositoryImpl(String filename) throws IOException, InvalidPriceFormat {
+        this.filename = filename;
+        this.postConstruct();
     }
 
     @PostConstruct
     private void postConstruct() throws IOException, InvalidPriceFormat {
+        this.hotels = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         List<HotelsFromJson> hotelsFromJsons = objectMapper.readValue(new File(filename), new TypeReference<>(){});
-        for(HotelsFromJson h: hotelsFromJsons) hotels.put(h.getId(), new HotelDao(h));
+        for(HotelsFromJson h: hotelsFromJsons) hotels.add(new HotelDao(h));
     }
 
 
     @Override
     public List<HotelDao> getAll() {
-        return this.hotels.values().stream().collect(Collectors.toList());
+        return this.hotels.stream().collect(Collectors.toList());
     }
 
     @Override
     public List<HotelDao> getHotels(LocalDate dateFrom, LocalDate dateTo, String city) throws NotValidFilterException, PlaceDoesNotExist, NotFoundException {
-        List<HotelDao> hotelDaos = this.hotels.values().stream().collect(Collectors.toList());
+        if(dateFrom == null || dateTo == null || city == null){
+            throw new NotValidFilterException("Cannot be null");
+        }
+        List<HotelDao> hotelDaos = this.hotels.stream().collect(Collectors.toList());
         hotelDaos = hotelDaos.stream()
                 .filter(h -> h.getCity().toLowerCase(Locale.ROOT).equals(city.toLowerCase(Locale.ROOT)))
                 .collect(Collectors.toList());
@@ -63,11 +68,6 @@ public class HotelRepositoryImpl implements HotelRepository {
             throw new NotFoundException("No se encontraron hoteles para ese destino en esas fechas");
         }
         return hotelDaos;
-    }
-
-    @Override
-    public Optional<HotelDao> getById(String id) {
-        return (this.hotels.get(id) != null) ? Optional.of(this.hotels.get(id)) : Optional.empty();
     }
 
 }

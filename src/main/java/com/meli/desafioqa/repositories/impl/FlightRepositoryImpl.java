@@ -32,6 +32,11 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     public FlightRepositoryImpl(){}
 
+    public FlightRepositoryImpl(String filename) throws IOException, InvalidPriceFormat {
+        this.filename = filename;
+        this.postConstruct();
+    }
+
     @PostConstruct
     public void postConstruct() throws IOException, InvalidPriceFormat {
         this.flights = new LinkedList<>();
