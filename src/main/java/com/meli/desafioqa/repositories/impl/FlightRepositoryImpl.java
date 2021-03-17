@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -27,34 +28,34 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Value("${flights-json}")
     private String filename;
 
-    private HashMap<String, FlightDao> flights;
+    private List<FlightDao> flights;
 
     public FlightRepositoryImpl(){}
 
     @PostConstruct
     public void postConstruct() throws IOException, InvalidPriceFormat {
-        this.flights = new HashMap<>();
+        this.flights = new LinkedList<>();
 
         ObjectMapper objectMapper = new ObjectMapper();
         List<FlightFromJson> flightFromJsons = objectMapper.readValue(new File(this.filename), new TypeReference<>() {});
-        for(FlightFromJson f: flightFromJsons) this.flights.put(f.getFlightNumber(), new FlightDao(f));
+        for(FlightFromJson f: flightFromJsons) this.flights.add(new FlightDao(f));
     }
 
     @Override
     public List<FlightDao> getAll() {
-        return this.flights.values().stream().collect(Collectors.toList());
+        return this.flights.stream().collect(Collectors.toList());
     }
 
     @Override
     public List<FlightDao> getFlights(String origin, String destination, LocalDate dateFrom, LocalDate dateTo) throws PlaceDoesNotExist, NotFoundException, NotValidFilterException {
         if(origin == null || destination == null || dateFrom == null || dateTo == null) throw new NotValidFilterException("Not valid parameters");
 
-        List<FlightDao> filteredByOrigin = this.flights.values().stream()
+        List<FlightDao> filteredByOrigin = this.flights.stream()
                 .filter(f -> f.getOrigin().toLowerCase(Locale.ROOT).equals(origin.toLowerCase(Locale.ROOT)))
                 .collect(Collectors.toList());
         if(filteredByOrigin.isEmpty()) throw new PlaceDoesNotExist("El origen elegido no existe");
 
-        List<FlightDao> filteredByDestination = this.flights.values().stream()
+        List<FlightDao> filteredByDestination = this.flights.stream()
                 .filter(f -> f.getDestination().toLowerCase(Locale.ROOT).equals(destination.toLowerCase(Locale.ROOT)))
                 .collect(Collectors.toList());
         if(filteredByDestination.isEmpty()) throw new PlaceDoesNotExist("El destinto elegido no existe");

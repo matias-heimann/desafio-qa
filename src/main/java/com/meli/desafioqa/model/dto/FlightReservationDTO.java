@@ -18,6 +18,5 @@ public class FlightReservationDTO {
     private Integer seats;
     private String seatType;
     private List<PersonDTO> people;
-    private StatusDTO status;
 
 }

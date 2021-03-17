@@ -17,7 +17,7 @@ public class FlightReservationRequest {
     @NotBlank(message = "El username es obligatorio") @Email(message = "El username debe ser un email")
     private String userName;
     @NotNull(message = "Ingrese reserva valida") @Valid
-    private FlightReservationDTO booking;
+    private FlightReservationDTO flightReservation;
     @NotNull(message = "Ingrese metodo de pago valido") @Valid
     private PaymentMethod paymentMethod;
 

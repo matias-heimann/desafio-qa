@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +17,8 @@ public class PaymentMethod {
     private String type;
     @NotBlank(message = "Ingrese numero de tarjeta valido")
     private String number;
+    @Min(value = 1, message = "Minimo debe haber una cuota")
+    @Max(value = 12, message = "Maximo son 12 cuotas")
     @NotNull(message = "Ingrese numero de cuotas")
     private Integer dues;
 

@@ -1,18 +1,14 @@
 package com.meli.desafioqa.controllers;
 
 import com.meli.desafioqa.exceptions.*;
-import com.meli.desafioqa.model.FlightReservation;
+import com.meli.desafioqa.model.FlightReservationRequest;
 import com.meli.desafioqa.model.HotelReservationRequest;
-import com.meli.desafioqa.model.dto.FlightDTO;
-import com.meli.desafioqa.model.dto.StatusDTO;
-import com.meli.desafioqa.model.dto.HotelDTO;
-import com.meli.desafioqa.model.dto.HotelReservationDTO;
+import com.meli.desafioqa.model.dto.*;
 import com.meli.desafioqa.services.FlightService;
 import com.meli.desafioqa.services.HotelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,8 +47,8 @@ public class Controller {
     }
 
     @PostMapping("/flight-reservation")
-    public String bookAFlight(@RequestBody FlightReservation flight){
-        return flight.getDate().toString();
+    public BookedFlightDTO bookAFlight(@Valid @RequestBody FlightReservationRequest flight) throws InvalidDateFormat, InvalidReservationException, NotValidDuesNumber, PlaceDoesNotExist, NotFoundException, NotValidFilterException {
+        return this.flightService.bookFlight(flight);
     }
 
     @ExceptionHandler(BaseException.class)
