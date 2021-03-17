@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Getter @Setter @AllArgsConstructor @EqualsAndHashCode @ToString
 public class HotelReservationRequest {
 
-    @NotNull(message = "Ingrese nombre de usuario") @NotBlank(message = "Ingrese nombre de usuario") @Email(message = "Nombre de usuario debe ser un mail")
+    @NotBlank(message = "El username es obligatorio") @Email(message = "El username debe ser un email")
     private String userName;
     @NotNull(message = "Ingrese reserva valida") @Valid
     private BookingDTO booking;
@@ -20,7 +20,6 @@ public class HotelReservationRequest {
     private PaymentMethodDTO paymentMethod;
 
     public HotelReservationRequest(){
-
     }
 
 }

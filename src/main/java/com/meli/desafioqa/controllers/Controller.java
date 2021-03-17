@@ -12,11 +12,13 @@ import com.meli.desafioqa.services.HotelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -61,8 +63,11 @@ public class Controller {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StatusDTO> handleExcpetion(MethodArgumentNotValidException methodArgumentNotValidException){
-        return new ResponseEntity<>(new StatusDTO(HttpStatus.BAD_REQUEST,
-                methodArgumentNotValidException.getAllErrors().get(0).getDefaultMessage() + " and " + (methodArgumentNotValidException.getErrorCount() - 1) + " more errors"),
-                HttpStatus.BAD_REQUEST);
+        StringBuffer sb = new StringBuffer("[");
+        String errorConcat = methodArgumentNotValidException.getAllErrors().stream().map(e -> e.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        sb.append(errorConcat);
+        sb.append(new StringBuffer("]"));
+        return new ResponseEntity<>(new StatusDTO(HttpStatus.BAD_REQUEST, sb.toString()), HttpStatus.BAD_REQUEST);
     }
 }

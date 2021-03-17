@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor @EqualsAndHashCode
 public class HotelReservationDTO {
 
-    @NotNull @NotBlank @Email
+    @Email
     private String userName;
     @NotNull
     private Double amount;
