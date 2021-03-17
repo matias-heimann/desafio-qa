@@ -1,5 +1,6 @@
 package com.meli.desafioqa.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.meli.desafioqa.exceptions.InvalidPriceFormat;
 import com.meli.desafioqa.utils.FlightFromJson;
 import com.meli.desafioqa.utils.UtilPriceToInt;

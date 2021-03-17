@@ -165,7 +165,31 @@ public class HotelServiceTest {
                 "Puerto Iguazú")).thenReturn(filteredHotels);
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
                 hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("DEBIT", "1234-1234-1234-1234", -1));
+                new PaymentMethod("CREDIT", "1234-1234-1234-1234", -1));
+        Assertions.assertThrows(NotValidDuesNumber.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
+    }
+
+    @Test
+    public void testBookForNonExistentDestination() throws NotFoundException, PlaceDoesNotExist, NotValidFilterException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
+                "Not exist destination")).thenThrow(NotFoundException.class);
+        this.hotelReservationDTO.getBooking().setDestination("Not exist destination");
+        HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
+                new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        Assertions.assertThrows(NotFoundException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
+    }
+
+    @Test
+    public void testBookForNonExistentRoomType() throws NotFoundException, PlaceDoesNotExist, NotValidFilterException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
+                "Puerto Iguazú")).thenReturn(filteredHotels);
+        hotelReservationDTO.getBooking().setRoomType("TRIPLE");
+        HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
+                new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
 }

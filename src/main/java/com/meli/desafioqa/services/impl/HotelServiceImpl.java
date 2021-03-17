@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -93,9 +94,16 @@ public class HotelServiceImpl implements HotelService {
         < hotelReservationRequest.getBooking().getPeopleAmount()){
             throw new InvalidReservationException("El tipo de habitación seleccionada no coincide con la cantidad de personas que se alojarán en ella.");
         }
+
+        if(RoomSizeTranslateUtil.roomType(hotelReservationRequest.getBooking().getRoomType().toUpperCase(Locale.ROOT))
+                != hotelDaoOptional.get().getRoomMaxCapacity()){
+            throw new InvalidReservationException("No hay ese tipo de habitaciones en ese hotel");
+        }
+
         Double interest = 0.0;
         Double amount = hotelDaoOptional.get().getPrice() * (double)DAYS.between(localDateFrom, localDateTo);
         Double total = 0.0;
+
         if(hotelReservationRequest.getPaymentMethod().getType().equals("CREDIT")){
             interest = InterestByDues.getInterestByDues(hotelReservationRequest.getPaymentMethod().getDues());
             total = amount * (1 + interest/100);
@@ -110,6 +118,9 @@ public class HotelServiceImpl implements HotelService {
         else{
             throw new InvalidReservationException("El tipo de pago no es valido");
         }
+
+        DecimalFormat df2 = new DecimalFormat("#.##");
+        total = Double.valueOf(String.format(df2.format(total)));
 
         return new HotelReservationDTO(hotelReservationRequest.getUserName(),
                 amount, interest, total, hotelReservationRequest.getBooking(),

@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -120,6 +121,9 @@ public class FlightServiceImpl implements FlightService {
         else{
             throw new InvalidReservationException("El tipo de pago no es valido");
         }
+
+        DecimalFormat df2 = new DecimalFormat("#.##");
+        total = Double.valueOf(String.format(df2.format(total)));
 
         return new BookedFlightDTO(flightReservationRequest.getUserName(), amount, interest, total,
                 flightReservationRequest.getFlightReservation(),

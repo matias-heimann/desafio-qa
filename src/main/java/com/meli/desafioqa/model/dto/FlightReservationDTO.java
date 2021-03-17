@@ -1,15 +1,12 @@
 package com.meli.desafioqa.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
 
-@Getter @Setter @AllArgsConstructor @EqualsAndHashCode
+@Getter @Setter @AllArgsConstructor @EqualsAndHashCode @ToString
 public class FlightReservationDTO {
 
     @NotNull(message = "La fecha de ida es obligatoria")

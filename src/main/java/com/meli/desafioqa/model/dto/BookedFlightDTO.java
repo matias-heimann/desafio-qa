@@ -1,11 +1,8 @@
 package com.meli.desafioqa.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter @Setter @EqualsAndHashCode @AllArgsConstructor
+@Getter @Setter @EqualsAndHashCode @AllArgsConstructor @ToString
 public class BookedFlightDTO {
 
     private String userName;
