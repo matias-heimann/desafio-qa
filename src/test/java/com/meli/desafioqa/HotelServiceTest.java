@@ -62,8 +62,9 @@ public class HotelServiceTest {
         people.add(new PersonDTO("41111", "matias", "heimann", "25/06/1997", "matias@gmail.com"));
         this.hotelReservationDTO = new HotelReservationDTO("matias@gmail.com", 31500.0,10.0, 34650.0,
                 new BookingDTO("10/02/2021", "15/02/2021",
-                        "Puerto Iguazú", "CH-0002", 1, "DOUBLE", people),
+                        "Puerto Iguazú", "CH-0002", 1, "DOUBLE", people, null),
                 new StatusDTO(HttpStatus.OK, "El proceso termino satisfactoriamente"));
+
     }
 
     @Test
@@ -120,8 +121,8 @@ public class HotelServiceTest {
         Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
                 "Puerto Iguazú")).thenReturn(filteredHotels);
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("CREDIT", "1234-1234-1234-1234", 5));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("CREDIT", "1234-1234-1234-1234", 5));
         Assertions.assertEquals(this.hotelReservationDTO, this.hotelService.bookHotel(hotelReservationRequest));
     }
 
@@ -133,8 +134,8 @@ public class HotelServiceTest {
         this.hotelReservationDTO.setInterest(0.0);
         this.hotelReservationDTO.setTotal(this.hotelReservationDTO.getAmount());
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertEquals(this.hotelReservationDTO, this.hotelService.bookHotel(hotelReservationRequest));
     }
 
@@ -144,8 +145,8 @@ public class HotelServiceTest {
         Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
                 "Puerto Iguazú")).thenReturn(filteredHotels);
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("NOT VALID", "1234-1234-1234-1234", 1));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("NOT VALID", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
 
@@ -155,8 +156,8 @@ public class HotelServiceTest {
         Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
                 "Puerto Iguazú")).thenReturn(filteredHotels);
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("DEBIT", "1234-1234-1234-1234", 2));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 2));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
 
@@ -166,8 +167,8 @@ public class HotelServiceTest {
         Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
                 "Puerto Iguazú")).thenReturn(filteredHotels);
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("CREDIT", "1234-1234-1234-1234", -1));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("CREDIT", "1234-1234-1234-1234", -1));
         Assertions.assertThrows(NotValidDuesNumber.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
 
@@ -178,8 +179,8 @@ public class HotelServiceTest {
                 "Not exist destination")).thenThrow(NotFoundException.class);
         this.hotelReservationDTO.getBooking().setDestination("Not exist destination");
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(NotFoundException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
 
@@ -190,8 +191,8 @@ public class HotelServiceTest {
                 "Puerto Iguazú")).thenReturn(filteredHotels);
         hotelReservationDTO.getBooking().setRoomType("TRIPLE");
         HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
-                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
 }

@@ -1,5 +1,7 @@
 package com.meli.desafioqa.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.meli.desafioqa.model.PaymentMethod;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -28,6 +30,9 @@ public class BookingDTO {
     private String roomType;
     @NotEmpty(message = "La lista de personas no debe ser vacia") @Valid
     private List<PersonDTO> people;
+    @NotNull(message = "Metodo de pago no puede ser nulo") @Valid
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private PaymentMethod paymentMethod;
 
     public BookingDTO(){}
 

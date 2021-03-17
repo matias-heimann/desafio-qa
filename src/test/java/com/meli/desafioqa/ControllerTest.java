@@ -63,7 +63,7 @@ public class ControllerTest {
 
         this.bookedFlightDTO = new BookedFlightDTO("matias@gmail.com", 10.0,1.0, 11.0,
                 new FlightReservationDTO("10/02/2021", "15/02/2021",
-                        "Buenos Aires", "Tucumán", "BATU-5536", 1, "Economy", people),
+                        "Buenos Aires", "Tucumán", "BATU-5536", 1, "Economy", people, null),
                 new StatusDTO(HttpStatus.OK, "El proceso termino satisfactoriamente"));
 
         this.allHotelDTOS = new LinkedList<>();
@@ -80,7 +80,7 @@ public class ControllerTest {
 
         this.hotelReservationDTO = new HotelReservationDTO("matias@gmail.com", 10.0,1.0, 11.0,
                 new BookingDTO("10/02/2021", "15/02/2021",
-                        "Tucumán", "CH-0002", 1, "DOUBLE", people),
+                        "Tucumán", "CH-0002", 1, "DOUBLE", people, null),
                 new StatusDTO(HttpStatus.OK, "El proceso termino satisfactoriamente"));
 
     }
@@ -117,8 +117,8 @@ public class ControllerTest {
 
     @Test
     public void bookAHotel() throws RoomTypeDoesNotExist, InvalidDateFormat, InvalidReservationException, NotValidDuesNumber, PlaceDoesNotExist, NotFoundException, NotValidFilterException {
-        HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking(),
-                new PaymentMethod("CREDIT", "101010", 5));
+        hotelReservationDTO.getBooking().setPaymentMethod(new PaymentMethod("CREDIT", "101010", 5));
+        HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
         Mockito.when(this.hotelService.bookHotel(hotelReservationRequest)).thenReturn(this.hotelReservationDTO);
         Assertions.assertEquals(this.hotelReservationDTO, this.controller.bookHotel(hotelReservationRequest));
     }
@@ -149,8 +149,8 @@ public class ControllerTest {
 
     @Test
     public void bookAFlight() throws InvalidDateFormat, InvalidReservationException, NotValidDuesNumber, PlaceDoesNotExist, NotFoundException, NotValidFilterException {
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(bookedFlightDTO.getUserName(), bookedFlightDTO.getFlightReservationDTO(),
-                new PaymentMethod("CREDIT", "101010", 5));
+        bookedFlightDTO.getFlightReservationDTO().setPaymentMethod(new PaymentMethod("CREDIT", "101010", 5));
+        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(bookedFlightDTO.getUserName(), bookedFlightDTO.getFlightReservationDTO());
         Mockito.when(this.flightService.bookFlight(flightReservationRequest)).thenReturn(this.bookedFlightDTO);
         Assertions.assertEquals(this.bookedFlightDTO, this.controller.bookFlight(flightReservationRequest));
     }

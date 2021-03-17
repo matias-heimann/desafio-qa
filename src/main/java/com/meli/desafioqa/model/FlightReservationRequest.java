@@ -18,8 +18,6 @@ public class FlightReservationRequest {
     private String userName;
     @NotNull(message = "Ingrese reserva valida") @Valid
     private FlightReservationDTO flightReservation;
-    @NotNull(message = "Ingrese metodo de pago valido") @Valid
-    private PaymentMethod paymentMethod;
 
     public FlightReservationRequest(){
     }

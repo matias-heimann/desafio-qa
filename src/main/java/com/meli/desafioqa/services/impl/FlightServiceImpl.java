@@ -107,12 +107,12 @@ public class FlightServiceImpl implements FlightService {
         Double amount = flightDao.getPrice() * (double)flightReservationRequest.getFlightReservation().getSeats();
         Double total = 0.0;
 
-        if(flightReservationRequest.getPaymentMethod().getType().equals("CREDIT")){
-            interest = InterestByDues.getInterestByDues(flightReservationRequest.getPaymentMethod().getDues());
+        if(flightReservationRequest.getFlightReservation().getPaymentMethod().getType().equalsIgnoreCase("CREDIT")){
+            interest = InterestByDues.getInterestByDues(flightReservationRequest.getFlightReservation().getPaymentMethod().getDues());
             total = amount * (1 + interest/100);
         }
-        else if(flightReservationRequest.getPaymentMethod().getType().equals("DEBIT")){
-            if(flightReservationRequest.getPaymentMethod().getDues() != 1){
+        else if(flightReservationRequest.getFlightReservation().getPaymentMethod().getType().equalsIgnoreCase("DEBIT")){
+            if(flightReservationRequest.getFlightReservation().getPaymentMethod().getDues() != 1){
                 throw new InvalidReservationException("Se debe pagar maximo una cuota pagando con DEBIT");
             }
             interest = 0.0;
@@ -124,6 +124,7 @@ public class FlightServiceImpl implements FlightService {
 
         DecimalFormat df2 = new DecimalFormat("#.##");
         total = Double.valueOf(String.format(df2.format(total)));
+        flightReservationRequest.getFlightReservation().setPaymentMethod(null);
 
         return new BookedFlightDTO(flightReservationRequest.getUserName(), amount, interest, total,
                 flightReservationRequest.getFlightReservation(),

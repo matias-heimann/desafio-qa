@@ -104,12 +104,12 @@ public class HotelServiceImpl implements HotelService {
         Double amount = hotelDaoOptional.get().getPrice() * (double)DAYS.between(localDateFrom, localDateTo);
         Double total = 0.0;
 
-        if(hotelReservationRequest.getPaymentMethod().getType().equals("CREDIT")){
-            interest = InterestByDues.getInterestByDues(hotelReservationRequest.getPaymentMethod().getDues());
+        if(hotelReservationRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("CREDIT")){
+            interest = InterestByDues.getInterestByDues(hotelReservationRequest.getBooking().getPaymentMethod().getDues());
             total = amount * (1 + interest/100);
         }
-        else if(hotelReservationRequest.getPaymentMethod().getType().equals("DEBIT")){
-            if(hotelReservationRequest.getPaymentMethod().getDues() != 1){
+        else if(hotelReservationRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("DEBIT")){
+            if(hotelReservationRequest.getBooking().getPaymentMethod().getDues() != 1){
                 throw new InvalidReservationException("Se debe pagar maximo una cuota pagando con DEBIT");
             }
             interest = 0.0;
@@ -121,6 +121,8 @@ public class HotelServiceImpl implements HotelService {
 
         DecimalFormat df2 = new DecimalFormat("#.##");
         total = Double.valueOf(String.format(df2.format(total)));
+
+        hotelReservationRequest.getBooking().setPaymentMethod(null);
 
         return new HotelReservationDTO(hotelReservationRequest.getUserName(),
                 amount, interest, total, hotelReservationRequest.getBooking(),

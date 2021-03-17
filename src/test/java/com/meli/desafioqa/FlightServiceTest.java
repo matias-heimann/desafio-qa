@@ -46,6 +46,7 @@ public class FlightServiceTest {
     private List<FlightDao> filteredFlightDaos;
     private LinkedList<PersonDTO> people;
     private BookedFlightDTO bookedFlightDTO;
+    private FlightReservationRequest flightReservationRequest;
 
     @BeforeEach
     private void beforeEach() throws IOException, InvalidPriceFormat {
@@ -66,8 +67,12 @@ public class FlightServiceTest {
 
         this.bookedFlightDTO = new BookedFlightDTO("matias@gmail.com", 6500.0,10.0, 7150.0,
                 new FlightReservationDTO("10/02/2021", "15/02/2021",
-                        "Buenos Aires", "Puerto Iguazú", "BAPI-1235", 1, "Economy", people),
+                        "Buenos Aires", "Puerto Iguazú", "BAPI-1235", 1, "Economy", people, null),
                 new StatusDTO(HttpStatus.OK, "El proceso termino satisfactoriamente"));
+
+        this.flightReservationRequest = new FlightReservationRequest("matias@gmail.com", new FlightReservationDTO("10/02/2021", "15/02/2021",
+                "Buenos Aires", "Puerto Iguazú", "BAPI-1235", 1, "Economy", people,
+                new PaymentMethod("CREDIT", "1234-1234-1234-1234", 5)));
     }
 
     @Test
@@ -144,9 +149,6 @@ public class FlightServiceTest {
         Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
                 LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
 
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("CREDIT", "1234-1234-1234-1234", 5));
-
         Assertions.assertEquals(this.bookedFlightDTO, this.flightService.bookFlight(flightReservationRequest));
     }
 
@@ -159,8 +161,8 @@ public class FlightServiceTest {
         this.bookedFlightDTO.setInterest(0.0);
         this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
 
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        flightReservationRequest.getFlightReservation().getPaymentMethod().setType("DEBIT");
+        flightReservationRequest.getFlightReservation().getPaymentMethod().setDues(1);
 
         Assertions.assertEquals(this.bookedFlightDTO, this.flightService.bookFlight(flightReservationRequest));
     }
@@ -174,8 +176,7 @@ public class FlightServiceTest {
         this.bookedFlightDTO.setInterest(0.0);
         this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
 
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("NOT VALID", "1234-1234-1234-1234", 1));
+        flightReservationRequest.getFlightReservation().getPaymentMethod().setType("NOT VALID");
 
         Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
     }
@@ -189,8 +190,7 @@ public class FlightServiceTest {
         this.bookedFlightDTO.setInterest(0.0);
         this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
 
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("CREDIT", "1234-1234-1234-1234", -1));
+        flightReservationRequest.getFlightReservation().getPaymentMethod().setDues(-1);
 
         Assertions.assertThrows(NotValidDuesNumber.class, () -> this.flightService.bookFlight(flightReservationRequest));
     }
@@ -204,8 +204,7 @@ public class FlightServiceTest {
         this.bookedFlightDTO.setInterest(0.0);
         this.bookedFlightDTO.setTotal(this.bookedFlightDTO.getAmount());
 
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 2));
+        flightReservationRequest.getFlightReservation().getPaymentMethod().setType("DEBIT");
 
         Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
     }
@@ -216,8 +215,9 @@ public class FlightServiceTest {
         Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
                 LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
         this.bookedFlightDTO.getFlightReservationDTO().setSeats(2);
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
+                this.bookedFlightDTO.getFlightReservationDTO());
+        flightReservationRequest.getFlightReservation().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
     }
 
@@ -227,8 +227,8 @@ public class FlightServiceTest {
         Mockito.when(this.flightRepository.getFlights("Buenos Aires", "Puerto Iguazú",
                 LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf))).thenReturn(this.filteredFlightDaos);
         this.bookedFlightDTO.getFlightReservationDTO().setFlightNumber("NOT");
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        this.flightReservationRequest.getFlightReservation().setFlightNumber("NOT");
+        flightReservationRequest.getFlightReservation().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.flightService.bookFlight(flightReservationRequest));
     }
 
@@ -244,8 +244,9 @@ public class FlightServiceTest {
         this.bookedFlightDTO.getFlightReservationDTO().getPeople().add(new PersonDTO("40404040","person2@gmail.com", "person", "person", "25-06-1997"));
         this.bookedFlightDTO.getFlightReservationDTO().setSeats(2);
 
-        FlightReservationRequest flightReservationRequest = new FlightReservationRequest(this.bookedFlightDTO.getUserName(),
-                this.bookedFlightDTO.getFlightReservationDTO(), new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        flightReservationRequest.getFlightReservation().setSeats(2);
+
+        flightReservationRequest.getFlightReservation().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
 
         Assertions.assertEquals(this.bookedFlightDTO, this.flightService.bookFlight(flightReservationRequest));
     }
