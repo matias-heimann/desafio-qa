@@ -1,0 +1,110 @@
+[
+  {
+    "Nro Vuelo": "BAPI-1235",
+    "Origen": "Buenos Aires",
+    "Destino": "Puerto Iguazú",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$6.500",
+    "Fecha ida": "10/02/2021",
+    "Fecha Vuelta": "15/02/2021"
+  },
+  {
+    "Nro Vuelo": "PIBA-1420",
+    "Origen": "Puerto Iguazú",
+    "Destino": "Bogotá",
+    "Tipo Asiento": "Business",
+    "Precio por persona": "$43.200",
+    "Fecha ida": "10/02/2021",
+    "Fecha Vuelta": "20/02/2021"
+  },
+  {
+    "Nro Vuelo": "PIBA-1420",
+    "Origen": "Puerto Iguazú",
+    "Destino": "Bogotá",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$25.735",
+    "Fecha ida": "10/02/2021",
+    "Fecha Vuelta": "21/02/2021"
+  },
+  {
+    "Nro Vuelo": "BATU-5536",
+    "Origen": "Buenos Aires",
+    "Destino": "Tucumán",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$7.320",
+    "Fecha ida": "10/02/2021",
+    "Fecha Vuelta": "17/02/2021"
+  },
+  {
+    "Nro Vuelo": "TUPI-3369",
+    "Origen": "Tucumán",
+    "Destino": "Puerto Iguazú",
+    "Tipo Asiento": "Business",
+    "Precio por persona": "$12.530",
+    "Fecha ida": "12/02/2021",
+    "Fecha Vuelta": "23/02/2021"
+  },
+  {
+    "Nro Vuelo": "TUPI-3369",
+    "Origen": "Tucumán",
+    "Destino": "Puerto Iguazú",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$5.400",
+    "Fecha ida": "02/01/2021",
+    "Fecha Vuelta": "16/01/2021"
+  },
+  {
+    "Nro Vuelo": "BOCA-4213",
+    "Origen": "Bogotá",
+    "Destino": "Cartagena",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$8.000",
+    "Fecha ida": "23/01/2021",
+    "Fecha Vuelta": "05/02/2021"
+  },
+  {
+    "Nro Vuelo": "CAME-0321",
+    "Origen": "Cartagena",
+    "Destino": "Medellín",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$7.800",
+    "Fecha ida": "23/01/2021",
+    "Fecha Vuelta": "31/01/2021"
+  },
+  {
+    "Nro Vuelo": "BOBA-6567",
+    "Origen": "Bogotá",
+    "Destino": "Buenos Aires",
+    "Tipo Asiento": "Business",
+    "Precio por persona": "$57.000",
+    "Fecha ida": "15/02/2021",
+    "Fecha Vuelta": "28/02/2021"
+  },
+  {
+    "Nro Vuelo": "BOBA-6567",
+    "Origen": "Bogotá",
+    "Destino": "Buenos Aires",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$39.860",
+    "Fecha ida": "01/03/2021",
+    "Fecha Vuelta": "14/03/2021"
+  },
+  {
+    "Nro Vuelo": "BOME-4442",
+    "Origen": "Bogotá",
+    "Destino": "Medellín",
+    "Tipo Asiento": "Economy",
+    "Precio por persona": "$11.000",
+    "Fecha ida": "10/02/2021",
+    "Fecha Vuelta": "24/02/2021"
+  },
+  {
+    "Nro Vuelo": "MEPI-9986",
+    "Origen": "Medellín",
+    "Destino": "Puerto Iguazú",
+    "Tipo Asiento": "Business",
+    "Precio por persona": "$41.640",
+    "Fecha ida": "17/04/2021",
+    "Fecha Vuelta": "02/05/2021"
+  }
+]

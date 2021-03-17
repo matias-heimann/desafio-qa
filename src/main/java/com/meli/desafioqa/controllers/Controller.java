@@ -38,10 +38,10 @@ public class Controller {
     }
 
     @GetMapping("/flights")
-    public List<FlightDTO> getFlights(@RequestParam(required = false, defaultValue = "") String dateFrom,
-                                      @RequestParam(required = false, defaultValue = "") String dateTo,
-                                      @RequestParam(required = false, defaultValue = "") String origin,
-                                      @RequestParam(required = false, defaultValue = "") String destination)
+    public List<FlightDTO> getFlights(@RequestParam(required = false, defaultValue = "") String origin,
+                                      @RequestParam(required = false, defaultValue = "") String destination,
+                                      @RequestParam(required = false, defaultValue = "") String dateFrom,
+                                      @RequestParam(required = false, defaultValue = "") String dateTo)
             throws PlaceDoesNotExist, NotValidFilterException, NotFoundException, InvalidDateFormat {
         return this.flightService.getFlights(origin, destination, dateFrom, dateTo);
     }

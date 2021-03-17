@@ -3,13 +3,12 @@ package com.meli.desafioqa.model;
 import com.meli.desafioqa.exceptions.InvalidPriceFormat;
 import com.meli.desafioqa.utils.HotelsFromJson;
 import com.meli.desafioqa.utils.UtilPriceToInt;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Getter @Setter
+@Getter @Setter @EqualsAndHashCode
 public class HotelDao {
 
     private String id;
