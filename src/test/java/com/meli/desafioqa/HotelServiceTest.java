@@ -195,4 +195,19 @@ public class HotelServiceTest {
         hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
         Assertions.assertThrows(InvalidReservationException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
     }
+
+    @Test
+    public void testBookForHotelWithOverpopulatedRoom() throws NotFoundException, PlaceDoesNotExist, NotValidFilterException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Mockito.when(this.hotelRepository.getHotels(LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf),
+                "Puerto Iguazú")).thenReturn(filteredHotels);
+        HotelReservationRequest hotelReservationRequest = new HotelReservationRequest(
+                hotelReservationDTO.getUserName(), hotelReservationDTO.getBooking());
+        hotelReservationRequest.getBooking().setPaymentMethod(new PaymentMethod("DEBIT", "1234-1234-1234-1234", 1));
+        hotelReservationRequest.getBooking().setHotelCode("HB-0001");
+        hotelReservationRequest.getBooking().setRoomType("SINGLE");
+        hotelReservationRequest.getBooking().setPeopleAmount(2);
+        hotelReservationRequest.getBooking().getPeople().add(new PersonDTO("41111", "matias", "heimann", "25/06/1997", "matias@gmail.com"));
+        Assertions.assertThrows(InvalidReservationException.class, () -> this.hotelService.bookHotel(hotelReservationRequest));
+    }
 }

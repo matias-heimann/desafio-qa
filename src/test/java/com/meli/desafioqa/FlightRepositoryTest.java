@@ -54,5 +54,31 @@ public class FlightRepositoryTest {
                 "Puerto Iguazú", LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf)));
     }
 
+    @Test
+    public void testGetFilteredFlightWithNullParameters(){
+        Assertions.assertThrows(NotValidFilterException.class, () -> this.flightRepository.getFlights("", "", null, null));
+    }
+
+    @Test
+    public void testGetFilteredFlightWithNotExistentOrigin(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Assertions.assertThrows(PlaceDoesNotExist.class, () -> this.flightRepository.getFlights("Not exist",
+                "Puerto Iguazú", LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf)));
+    }
+
+    @Test
+    public void testGetFilteredFlightWithNotExistentDestination(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Assertions.assertThrows(PlaceDoesNotExist.class, () -> this.flightRepository.getFlights("Buenos Aires",
+                "Not exist", LocalDate.parse("10/02/2021", dtf), LocalDate.parse("15/02/2021", dtf)));
+    }
+
+    @Test
+    public void testGetFilteredFlightWithNotExistentDatesForTravel(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Assertions.assertThrows(NotFoundException.class, () -> this.flightRepository.getFlights("Buenos Aires",
+                "Puerto Iguazú", LocalDate.parse("10/02/2020", dtf), LocalDate.parse("15/02/2020", dtf)));
+    }
+
 
 }
