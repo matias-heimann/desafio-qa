@@ -6,6 +6,7 @@ import com.meli.desafioqa.exceptions.NotValidFilterException;
 import com.meli.desafioqa.exceptions.PlaceDoesNotExist;
 import com.meli.desafioqa.model.FlightDao;
 import com.meli.desafioqa.model.dto.FlightDTO;
+import com.meli.desafioqa.model.dto.FlightReservationDTO;
 import com.meli.desafioqa.repositories.FlightRepository;
 import com.meli.desafioqa.services.FlightService;
 import com.meli.desafioqa.utils.DateValidationUtil;
@@ -58,5 +59,10 @@ public class FlightServiceImpl implements FlightService {
         }
 
         return flightDTOS;
+    }
+
+    @Override
+    public FlightReservationDTO bookFlight() {
+        return null;
     }
 }

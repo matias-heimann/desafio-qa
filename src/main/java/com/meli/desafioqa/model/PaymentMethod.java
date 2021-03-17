@@ -1,4 +1,4 @@
-package com.meli.desafioqa.model.dto;
+package com.meli.desafioqa.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter @Setter @AllArgsConstructor @EqualsAndHashCode
-public class PaymentMethodDTO {
+public class PaymentMethod {
 
     @NotBlank(message = "Ingrese tipo de pago valido")
     private String type;
@@ -18,6 +18,6 @@ public class PaymentMethodDTO {
     @NotNull(message = "Ingrese numero de cuotas")
     private Integer dues;
 
-    public PaymentMethodDTO(){}
+    public PaymentMethod(){}
 
 }

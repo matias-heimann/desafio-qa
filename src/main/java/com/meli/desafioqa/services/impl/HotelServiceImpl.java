@@ -68,7 +68,6 @@ public class HotelServiceImpl implements HotelService {
             throw new InvalidReservationException("Hotel reservation can't be null");
         }
 
-        System.out.println(hotelReservationRequest);
         LocalDate localDateFrom = DateValidationUtil.dateValidation(hotelReservationRequest.getBooking().getDateFrom(), "dd/MM/yyyy");
         LocalDate localDateTo = DateValidationUtil.dateValidation(hotelReservationRequest.getBooking().getDateTo(), "dd/MM/yyyy");
 
@@ -114,7 +113,6 @@ public class HotelServiceImpl implements HotelService {
 
         return new HotelReservationDTO(hotelReservationRequest.getUserName(),
                 amount, interest, total, hotelReservationRequest.getBooking(),
-                hotelReservationRequest.getPaymentMethod(),
                 new StatusDTO(HttpStatus.OK, "El proceso termino satisfactoriamente"));
     }
 }

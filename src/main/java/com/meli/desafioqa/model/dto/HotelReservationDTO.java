@@ -25,8 +25,6 @@ public class HotelReservationDTO {
     @NotNull
     private BookingDTO booking;
     @NotNull
-    private PaymentMethodDTO paymentMethod;
-    @NotNull
     private StatusDTO statusCode;
 
 

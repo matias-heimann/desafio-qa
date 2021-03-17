@@ -65,7 +65,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         if(filteredByOrigin.isEmpty()) throw new PlaceDoesNotExist("El vuelo seleccionado no existe");
 
         filteredByOrigin =  filteredByOrigin.stream()
-                .filter(f -> f.getDateFrom().equals(dateFrom) && f.getDateTo().equals(dateTo))
+                .filter(f -> f.getDateFrom().compareTo(dateFrom) <= 0 && f.getDateTo().compareTo(dateTo) >= 0)
                 .collect(Collectors.toList());
         if(filteredByOrigin.isEmpty()) throw new NotFoundException("No se encontraron vuelos entre ese origen y ese destino en esas fechas");
 

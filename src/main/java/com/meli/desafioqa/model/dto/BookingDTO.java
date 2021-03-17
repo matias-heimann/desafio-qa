@@ -3,6 +3,7 @@ package com.meli.desafioqa.model.dto;
 import lombok.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -12,19 +13,20 @@ import java.util.List;
 @Getter @Setter @AllArgsConstructor @EqualsAndHashCode
 public class BookingDTO {
 
-    @NotNull @NotBlank
+    @NotBlank(message = "Es obligatorio llenar la fecha de entrada")
     private String dateFrom;
-    @NotNull @NotBlank
+    @NotBlank(message = "Es obligatorio llenar fecha de salida")
     private String dateTo;
-    @NotNull @NotBlank
+    @NotBlank(message = "Es obligatorio llenar el destino")
     private String destination;
-    @NotNull @NotBlank
+    @NotBlank(message = "Es obligatorio utilizar el codigo de hotel")
     private String hotelCode;
-    @NotNull
+    @NotNull(message = "Es obligatorio llenar el campo de cantidad de personas")
+    @Min(value = 1, message = "Tiene que haber al menos una persona")
     private Integer peopleAmount;
-    @NotNull @NotBlank
+    @NotBlank(message = "Es obligatorio usar el tipo de habitacion")
     private String roomType;
-    @NotNull @NotEmpty @Valid
+    @NotEmpty(message = "La lista de personas no debe ser vacia") @Valid
     private List<PersonDTO> people;
 
     public BookingDTO(){}
