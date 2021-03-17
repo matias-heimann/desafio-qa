@@ -47,7 +47,7 @@ public class Controller {
     }
 
     @PostMapping("/flight-reservation")
-    public BookedFlightDTO bookAFlight(@Valid @RequestBody FlightReservationRequest flight) throws InvalidDateFormat, InvalidReservationException, NotValidDuesNumber, PlaceDoesNotExist, NotFoundException, NotValidFilterException {
+    public BookedFlightDTO bookFlight(@Valid @RequestBody FlightReservationRequest flight) throws InvalidDateFormat, InvalidReservationException, NotValidDuesNumber, PlaceDoesNotExist, NotFoundException, NotValidFilterException {
         return this.flightService.bookFlight(flight);
     }
 
